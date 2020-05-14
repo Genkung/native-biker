@@ -143,4 +143,22 @@
       <Name>Biker</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\hammenu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\hammenu%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\hammenu%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\iosbackarrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\iosbackarrow%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\iosbackarrow%403x.png" />
+  </ItemGroup>
 </Project>
