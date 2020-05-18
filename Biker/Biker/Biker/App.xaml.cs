@@ -1,4 +1,6 @@
 ﻿using Biker.Views;
+using Com.OneSignal;
+using Com.OneSignal.Abstractions;
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -10,6 +12,7 @@ namespace Biker
 {
     public partial class App : Application
     {
+        public static bool IsInForeground;
         private const string MCLocalStorageFolderName = "mcontent";
         private readonly string destinationFolder;
 
@@ -27,6 +30,12 @@ namespace Biker
 
         protected override void OnStart()
         {
+            IsInForeground = true;
+            OneSignal.Current.StartInit("bd24274c-4778-491a-b45f-4185b2a0110f")//TODO: insert ID here
+                .InFocusDisplaying(Com.OneSignal.Abstractions.OSInFocusDisplayOption.None)
+                .HandleNotificationReceived(HandleNotificationReceived)
+                .HandleNotificationOpened(HandleNotificationOpened)
+                .EndInit();
         }
 
         protected override void OnSleep()
@@ -54,6 +63,15 @@ namespace Biker
             {
                 archive.ExtractToDirectory(destinationFolder);
             }
+        }
+
+        private async void HandleNotificationReceived(OSNotification result) 
+        {
+           await MainPage.DisplayAlert("Noti","HandleNotificationReceived","X");
+        }
+        private async void HandleNotificationOpened(OSNotificationOpenedResult result)
+        {
+            await MainPage.DisplayAlert("Noti", "HandleNotificationOpened", "X");
         }
 
     }
