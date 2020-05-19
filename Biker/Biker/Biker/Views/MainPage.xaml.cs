@@ -1,4 +1,6 @@
-﻿using Biker.Services;
+﻿using Biker.Models;
+using Biker.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,21 +29,31 @@ namespace Biker.Views
                 MessagingCenter.Send(this, "HomeReady", string.Empty);
             };
 
-            myWebview.RegisterCallback("Navigate", page =>
+            myWebview.RegisterNativeFunction("NavigateToPage", async param =>
             {
+                var paramObject = JsonConvert.DeserializeObject<NavigateToPageParameter>(param);
                 Device.BeginInvokeOnMainThread(async () =>
                 {
-                    await Navigation.PushAsync(new WebViewPage(page));
+                    await Navigation.PushAsync(new WebViewPage(paramObject.PageName, paramObject.Params));
+                });
+                return await Task.FromResult(new object[] { true });
+            });
+
+            myWebview.RegisterCallback("SetPageTitle", title =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    Title = title;
                 });
             });
 
             myWebview.Source = htmlSource;
         }
 
-        public void ChangePage(string page)
+        public void ChangePage(string page,object parameters)
         {
             var htmlSource = WebviewService.GetHtmlPathByName(page);
-            myWebview.Source = htmlSource;
+            myWebview.Source = $"{htmlSource}{WebviewService.ConvertObjectToUrlParameters(parameters)}";
         }
     }
 }

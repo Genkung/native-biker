@@ -21,15 +21,18 @@ namespace Biker.Views
             var menuList = new List<SideMenuItem>
             {
                 new SideMenuItem{ Title = "HomePage", Page = "master" },
+                new SideMenuItem{ Title = "A", Page = "a",Params=new {id="0123", item ="Iamsidemenu" } },
                 new SideMenuItem{ Title = "A2", Page = "a2" }
             };
+
             ListViewMenu.ItemsSource = menuList;
             ListViewMenu.ItemSelected += (sender, e) =>
             {
                 if (e.SelectedItem == null) return;
 
                 var page = ((SideMenuItem)e.SelectedItem).Page;
-                PageService.GetRootPage().ChangePage(page);
+                var parameters = ((SideMenuItem)e.SelectedItem).Params;
+                PageService.GetRootPage().ChangePage(page, parameters);
                 ((MasterDetailPage)Application.Current.MainPage).IsPresented = false;
                 ListViewMenu.SelectedItem = null;
             };

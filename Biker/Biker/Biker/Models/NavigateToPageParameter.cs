@@ -4,10 +4,9 @@ using System.Text;
 
 namespace Biker.Models
 {
-    public class SideMenuItem
+    public class NavigateToPageParameter
     {
-        public string Page { get; set; }
-        public string Title { get; set; }
+        public string PageName { get; set; }
         public object Params { get; set; }
     }
 }
