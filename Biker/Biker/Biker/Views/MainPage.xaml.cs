@@ -2,10 +2,6 @@
 using Biker.Services;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TheS.DevXP.XamForms;
 using Xamarin.Forms;
@@ -22,12 +18,19 @@ namespace Biker.Views
 
             myWebview.Accessors = new TheS.DevXP.XamForms.XWebViewAccessorCollection(
                 LocalContentAccessor.GetAppData(WebviewService.MCLocalStorageFolderName));
-            var htmlSource = WebviewService.GetHtmlPathByName("master");
+            var htmlSource = WebviewService.GetHtmlPathByName("home");
 
             myWebview.NavigateOrRequesting += (s, e) =>
             {
-                MessagingCenter.Send(this, "HomeReady", string.Empty);
+                MessagingCenter.Send(this, MessagingChannel.HomeReady, string.Empty);
             };
+
+            App.notiservice.SubscriptNotification((sender, param) =>
+            {
+                Device.BeginInvokeOnMainThread(async () => {
+                    await myWebview.EvaluateJavaScriptAsync($"onSendNotification('{param.NotiKey}',{param.Params});");
+                });
+            });
 
             myWebview.RegisterNativeFunction("NavigateToPage", async param =>
             {
@@ -39,12 +42,23 @@ namespace Biker.Views
                 return await Task.FromResult(new object[] { true });
             });
 
+            myWebview.RegisterNativeFunction("GetBikerId", async param =>
+            {
+                var biker = BikerService.GetBikerInfo();
+                return await Task.FromResult(new object[] { biker._id });
+            });
+
             myWebview.RegisterCallback("SetPageTitle", title =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     Title = title;
                 });
+            });
+
+            myWebview.RegisterNativeFunction("GetParamsInNotificationStack", async notikey =>
+            {
+                return await Task.FromResult(new object[] { App.notiservice.GetParamsInNotificationStack(notikey) });
             });
 
             myWebview.Source = htmlSource;
@@ -54,6 +68,13 @@ namespace Biker.Views
         {
             var htmlSource = WebviewService.GetHtmlPathByName(page);
             myWebview.Source = $"{htmlSource}{WebviewService.ConvertObjectToUrlParameters(parameters)}";
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            myWebview.Focus();
+            myWebview.EvaluateJavaScriptAsync("refreshOnGoBack();");
         }
     }
 }

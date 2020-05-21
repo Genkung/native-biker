@@ -8,7 +8,8 @@ namespace Biker.Services
 {
     public class WebviewService
     {
-        public static readonly string MCLocalStorageFolderName = "mcontent/ionicapp4";
+        public static readonly string MCLocalStorageFolderName = "mcontent/zip-biker";
+
         public static string GetHtmlPathByName(string pageName) 
         {
             var dirPath = Environment.SpecialFolder.LocalApplicationData;

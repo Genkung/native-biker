@@ -24,7 +24,7 @@ namespace Biker.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
 
-            Xamarin.Forms.MessagingCenter.Subscribe<MainPage, string>(this, "HomeReady", (sub, msg) =>
+            Xamarin.Forms.MessagingCenter.Subscribe<MainPage, string>(this, Models.MessagingChannel.HomeReady, (sub, msg) =>
             {
                 var toolbar = this.FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.toolbar);
                 SetSupportActionBar(toolbar);

@@ -1,10 +1,6 @@
 ﻿using Biker.Services;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TheS.DevXP.XamForms;
 using Xamarin.Forms;
@@ -29,12 +25,23 @@ namespace Biker.Views
                 return await Task.FromResult(new object[] { false });
             });
 
+            myWebview.RegisterNativeFunction("GetBikerId", async param =>
+            {
+                var biker = BikerService.GetBikerInfo();
+                return await Task.FromResult(new object[] { biker._id });
+            });
+
             myWebview.RegisterCallback("SetPageTitle", title =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     Title = title;
                 });
+            });
+
+            myWebview.RegisterNativeFunction("HasNificationKey", async notikey =>
+            {
+                return await Task.FromResult(new object[] { App.notiservice.GetParamsInNotificationStack(notikey) });
             });
 
             myWebview.Source = $"{htmlSource}{WebviewService.ConvertObjectToUrlParameters(parameters)}";
@@ -51,6 +58,13 @@ namespace Biker.Views
             {
                 await Navigation.PopAsync(true);
             }
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            myWebview.Focus();
+            myWebview.EvaluateJavaScriptAsync("refreshOnGoBack();");
         }
     }
 }

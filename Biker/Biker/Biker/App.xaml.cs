@@ -1,11 +1,17 @@
-﻿using Biker.Views;
+﻿using Biker.Models;
+using Biker.Services;
+using Biker.Views;
 using Com.OneSignal;
 using Com.OneSignal.Abstractions;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.Xaml;
 
 namespace Biker
@@ -15,6 +21,7 @@ namespace Biker
         public static bool IsInForeground;
         private const string MCLocalStorageFolderName = "mcontent";
         private readonly string destinationFolder;
+        public static NotificationService notiservice = new NotificationService();
 
         public App()
         {
@@ -23,7 +30,7 @@ namespace Biker
             var dirPath = Environment.SpecialFolder.LocalApplicationData;
             var defaultDirPath = Environment.GetFolderPath(dirPath);
             destinationFolder = Path.Combine(defaultDirPath, MCLocalStorageFolderName);
-            DownloadZip("https://manadevfrom.blob.core.windows.net/zips/biker.zip");
+            DownloadZip("https://manadevfrom.blob.core.windows.net/zips/zip-biker.zip");
 
             MainPage = new LoginPage();
         }
@@ -45,6 +52,7 @@ namespace Biker
         protected override void OnResume()
         {
         }
+
         private void DownloadZip(string DownloadFileURL)
         {
 
@@ -65,15 +73,25 @@ namespace Biker
             }
         }
 
-        private async void HandleNotificationReceived(OSNotification result) 
+        private void HandleNotificationReceived(OSNotification result)
         {
-           await MainPage.DisplayAlert("Noti","HandleNotificationReceived","X");
+            ProcessNotification(result.payload.additionalData);
         }
-        private async void HandleNotificationOpened(OSNotificationOpenedResult result)
+        private void HandleNotificationOpened(OSNotificationOpenedResult result)
         {
-            await MainPage.DisplayAlert("Noti", "HandleNotificationOpened", "X");
+            ProcessNotification(result.notification.payload.additionalData);
         }
 
+        public void ProcessNotification(IDictionary<string, object> notificationData)
+        {
+            var isValidNotiMessage = notificationData != null && notificationData.Any();
+            if (isValidNotiMessage)
+            {
+                notificationData.ForEach(it =>
+                {
+                    App.notiservice.PublishNotification(it.Key, it.Value);
+                });
+            }
+        }
     }
-
 }
