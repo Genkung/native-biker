@@ -46,10 +46,12 @@ namespace Biker
 
         protected override void OnSleep()
         {
+            IsInForeground = false;
         }
 
         protected override void OnResume()
         {
+            IsInForeground = true;
         }
 
         private void DownloadZip(string DownloadFileURL)
@@ -74,7 +76,7 @@ namespace Biker
 
         private void HandleNotificationReceived(OSNotification result)
         {
-            ProcessNotification(result.payload.additionalData);
+            if (IsInForeground) ProcessNotification(result.payload.additionalData);
         }
         private void HandleNotificationOpened(OSNotificationOpenedResult result)
         {
