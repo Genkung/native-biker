@@ -30,19 +30,33 @@ namespace Biker.Views
         {
             myWebview.RegisterNativeFunction("NavigateToPage", NavigateToPage);
             myWebview.RegisterNativeFunction("GetBikerId", GetBikerId);
+            myWebview.RegisterCallback("Goback", Goback);
+            myWebview.RegisterCallback("PopToRoot", PopToRoot);
             myWebview.RegisterCallback("SetPageTitle", SetPageTitle);
             myWebview.RegisterCallback("ExecuteNotiIfExist", ExecuteNotiIfExist);
             myWebview.RegisterCallback("RemoveNotificationChannel", RemoveNotificationChannel);
+            myWebview.RegisterCallback("OpenMapDirection", OpenMapDirection);
         }
 
         private async Task<object[]> NavigateToPage(string param)
         {
-            var paramObject = JsonConvert.DeserializeObject<NavigateToPageParameter>(param);
+            return new object[] { false };
+        }
+
+        private async void Goback(string param)
+        {
             Device.BeginInvokeOnMainThread(async () =>
             {
-                await Navigation.PushAsync(new WebViewPage(paramObject.PageName, paramObject.Params));
+                GoBack();
             });
-            return new object[] { true };
+        }
+
+        private async void PopToRoot(string param)
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await Navigation.PopAsync(true);
+            });
         }
 
         private async Task<object[]> GetBikerId(string param)
@@ -69,17 +83,10 @@ namespace Biker.Views
             NotificationService.RemoveNotificationStack(notiChannel);
         }
 
-        public async void GoBack()
+        private async void OpenMapDirection(string directionParam)
         {
-            myWebview.RefreshCanGoBackForward();
-            if (myWebview.CanGoBack)
-            {
-                myWebview.GoBack();
-            }
-            else
-            {
-                await Navigation.PopAsync(true);
-            }
+            var latLon = JsonConvert.DeserializeObject<OpenDirectionParam>(directionParam);
+            await GoogleMapService.OpenMapDirection(latLon.Latitude, latLon.Longitude);
         }
 
         protected override void OnAppearing()
@@ -102,6 +109,19 @@ namespace Biker.Views
         {
             base.OnDisappearing();
             NotificationService.UnSubscriptNotification();
+        }
+
+        public async void GoBack()
+        {
+            myWebview.RefreshCanGoBackForward();
+            if (myWebview.CanGoBack)
+            {
+                myWebview.GoBack();
+            }
+            else
+            {
+                await Navigation.PopAsync(true);
+            }
         }
     }
 }

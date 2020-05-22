@@ -32,7 +32,7 @@ namespace Biker.Views
 
                 var page = ((SideMenuItem)e.SelectedItem).Page;
                 var parameters = ((SideMenuItem)e.SelectedItem).Params;
-                PageService.GetRootPage().ChangePage(page, parameters);
+                PageService.GetRootPage().SideMenuChangePage(page, parameters);
                 ((MasterDetailPage)Application.Current.MainPage).IsPresented = false;
                 ListViewMenu.SelectedItem = null;
             };

@@ -30,13 +30,16 @@ namespace Biker.Views
             myWebview.Source = htmlSource;
         }
 
-        private void RegisterWebviewBaseFunction() 
+        private void RegisterWebviewBaseFunction()
         {
             myWebview.RegisterNativeFunction("NavigateToPage", NavigateToPage);
             myWebview.RegisterNativeFunction("GetBikerId", GetBikerId);
+            myWebview.RegisterCallback("Goback", Goback);
+            myWebview.RegisterCallback("PopToRoot", PopToRoot);
             myWebview.RegisterCallback("SetPageTitle", SetPageTitle);
             myWebview.RegisterCallback("ExecuteNotiIfExist", ExecuteNotiIfExist);
             myWebview.RegisterCallback("RemoveNotificationChannel", RemoveNotificationChannel);
+            myWebview.RegisterCallback("OpenMapDirection", OpenMapDirection);
         }
 
         private async Task<object[]> NavigateToPage(string param)
@@ -55,7 +58,15 @@ namespace Biker.Views
             return new object[] { biker._id };
         }
 
-        private async void SetPageTitle(string title) 
+        private async void Goback(string param)
+        {
+        }
+
+        private async void PopToRoot(string param)
+        {
+        }
+
+        private async void SetPageTitle(string title)
         {
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -71,6 +82,12 @@ namespace Biker.Views
         private async void RemoveNotificationChannel(string notiChannel)
         {
             NotificationService.RemoveNotificationStack(notiChannel);
+        }
+
+        private async void OpenMapDirection(string directionParam)
+        {
+            var latLon = JsonConvert.DeserializeObject<OpenDirectionParam>(directionParam);
+            await GoogleMapService.OpenMapDirection(latLon.Latitude, latLon.Longitude);
         }
 
         protected override void OnAppearing()
@@ -95,7 +112,7 @@ namespace Biker.Views
             NotificationService.UnSubscriptNotification();
         }
 
-        public void ChangePage(string page, object parameters)
+        public void SideMenuChangePage(string page, object parameters)
         {
             var htmlSource = WebviewService.GetHtmlPathByName(page);
             myWebview.Source = $"{htmlSource}{WebviewService.ConvertObjectToUrlParameters(parameters)}";
