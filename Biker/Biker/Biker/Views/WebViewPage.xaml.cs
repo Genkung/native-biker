@@ -39,11 +39,6 @@ namespace Biker.Views
                 });
             });
 
-            myWebview.RegisterNativeFunction("HasNificationKey", async notikey =>
-            {
-                return await Task.FromResult(new object[] { App.notiservice.GetParamsInNotificationStack(notikey) });
-            });
-
             myWebview.Source = $"{htmlSource}{WebviewService.ConvertObjectToUrlParameters(parameters)}";
         }
 
@@ -65,6 +60,20 @@ namespace Biker.Views
             base.OnAppearing();
             myWebview.Focus();
             myWebview.EvaluateJavaScriptAsync("refreshOnGoBack();");
+
+            NotificationService.SubscriptNotification((sender, obj) =>
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await myWebview?.EvaluateJavaScriptAsync($"onSendNotification('{obj.NotiKey}',{obj.Params});");
+                });
+            });
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            NotificationService.UnSubscriptNotification();
         }
     }
 }

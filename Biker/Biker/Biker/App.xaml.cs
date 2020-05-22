@@ -21,7 +21,6 @@ namespace Biker
         public static bool IsInForeground;
         private const string MCLocalStorageFolderName = "mcontent";
         private readonly string destinationFolder;
-        public static NotificationService notiservice = new NotificationService();
 
         public App()
         {
@@ -89,7 +88,8 @@ namespace Biker
             {
                 notificationData.ForEach(it =>
                 {
-                    App.notiservice.PublishNotification(it.Key, it.Value);
+                    NotificationService.AddNotificationStack(it.Key, it.Value);
+                    NotificationService.PublishNotification(it.Key);
                 });
             }
         }

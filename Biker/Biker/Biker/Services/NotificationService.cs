@@ -1,4 +1,6 @@
 ﻿using Biker.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,19 +11,29 @@ namespace Biker.Services
 {
     public class NotificationService
     {
-        public Dictionary<string, object> NotificatiionStack = new Dictionary<string, object>();
+        public static NotificationService obj = new NotificationService();
+        public static Dictionary<string, object> NotificatiionStack = new Dictionary<string, object>();
 
-        public object GetParamsInNotificationStack(string notiChannel)
+        public static void ExecuteNotificationIfExist(string notiChannel)
         {
-            object returnCallback;
-            NotificatiionStack.TryGetValue(notiChannel, out returnCallback);
-            return returnCallback;
+            object returnParam;
+            var notiIsExits = NotificatiionStack.TryGetValue(notiChannel, out returnParam);
+            if (notiIsExits)
+            {
+                PublishNotification(notiChannel);
+            }
         }
 
-        public void PublishNotification(string notiChannel, object param)
+        public static void RemoveNotificationStack(string notiChannel)
         {
-            AddNotificationStack(notiChannel, param);
+            if (NotificatiionStack.ContainsKey(notiChannel))
+            {
+                NotificatiionStack.Remove(notiChannel);
+            }
+        }
 
+        public static void PublishNotification(string notiChannel)
+        {
             if (NotificatiionStack.ContainsKey(notiChannel))
             {
                 var sendNoti = new PublishNotificationModel
@@ -29,19 +41,24 @@ namespace Biker.Services
                     NotiKey = notiChannel,
                     Params = NotificatiionStack.GetValueOrDefault(notiChannel)
                 };
-                MessagingCenter.Send(this, MessagingChannel.SendNotification, sendNoti);
+                MessagingCenter.Send(obj, MessagingChannel.SendNotification, sendNoti);
             }
         }
 
-        public void SubscriptNotification(Action<NotificationService, PublishNotificationModel> callback)
+        public static void SubscriptNotification(Action<NotificationService, PublishNotificationModel> callback)
         {
-            MessagingCenter.Subscribe<NotificationService, PublishNotificationModel>(this, MessagingChannel.SendNotification, callback);
+            MessagingCenter.Subscribe<NotificationService, PublishNotificationModel>(obj, MessagingChannel.SendNotification, callback);
         }
 
-        private void AddNotificationStack(string notiChannel, object param)
+        public static void UnSubscriptNotification() 
         {
-            var aleadyAddNotification = NotificatiionStack.TryAdd(notiChannel, param);
-            if (!aleadyAddNotification)
+            MessagingCenter.Unsubscribe<NotificationService, PublishNotificationModel>(obj, MessagingChannel.SendNotification);
+        }
+
+        public static void AddNotificationStack(string notiChannel, object param)
+        {
+            var aleadyAddNotification = !NotificatiionStack.TryAdd(notiChannel, param);
+            if (aleadyAddNotification)
             {
                 NotificatiionStack.Remove(notiChannel);
                 NotificatiionStack.TryAdd(notiChannel, param);
