@@ -25,54 +25,58 @@ namespace Biker.Views
                 MessagingCenter.Send(this, MessagingChannel.HomeReady, string.Empty);
             };
 
-            myWebview.RegisterNativeFunction("NavigateToPage", async param =>
-            {
-                var paramObject = JsonConvert.DeserializeObject<NavigateToPageParameter>(param);
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    await Navigation.PushAsync(new WebViewPage(paramObject.PageName, paramObject.Params));
-                });
-                return new object[] { true };
-            });
-
-            myWebview.RegisterNativeFunction("GetBikerId", async param =>
-            {
-                var biker = BikerService.GetBikerInfo();
-                return new object[] { biker._id };
-            });
-
-            myWebview.RegisterCallback("SetPageTitle", title =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    Title = title;
-                });
-            });
-
-            myWebview.RegisterCallback("ExecuteNotiIfExist", notiChannel =>
-            {
-                NotificationService.ExecuteNotificationIfExist(notiChannel);
-            });
-
-            myWebview.RegisterCallback("RemoveNotificationChannel", notiChannel =>
-            {
-                NotificationService.RemoveNotificationStack(notiChannel);
-            });
+            RegisterWebviewBaseFunction();
 
             myWebview.Source = htmlSource;
         }
 
-        public void ChangePage(string page, object parameters)
+        private void RegisterWebviewBaseFunction() 
         {
-            var htmlSource = WebviewService.GetHtmlPathByName(page);
-            myWebview.Source = $"{htmlSource}{WebviewService.ConvertObjectToUrlParameters(parameters)}";
+            myWebview.RegisterNativeFunction("NavigateToPage", NavigateToPage);
+            myWebview.RegisterNativeFunction("GetBikerId", GetBikerId);
+            myWebview.RegisterCallback("SetPageTitle", SetPageTitle);
+            myWebview.RegisterCallback("ExecuteNotiIfExist", ExecuteNotiIfExist);
+            myWebview.RegisterCallback("RemoveNotificationChannel", RemoveNotificationChannel);
+        }
+
+        private async Task<object[]> NavigateToPage(string param)
+        {
+            var paramObject = JsonConvert.DeserializeObject<NavigateToPageParameter>(param);
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await Navigation.PushAsync(new WebViewPage(paramObject.PageName, paramObject.Params));
+            });
+            return new object[] { true };
+        }
+
+        private async Task<object[]> GetBikerId(string param)
+        {
+            var biker = BikerService.GetBikerInfo();
+            return new object[] { biker._id };
+        }
+
+        private async void SetPageTitle(string title) 
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Title = title;
+            });
+        }
+
+        private async void ExecuteNotiIfExist(string notiChannel)
+        {
+            NotificationService.ExecuteNotificationIfExist(notiChannel);
+        }
+
+        private async void RemoveNotificationChannel(string notiChannel)
+        {
+            NotificationService.RemoveNotificationStack(notiChannel);
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
             myWebview.Focus();
-            myWebview.EvaluateJavaScriptAsync("refreshOnGoBack();");
 
             NotificationService.SubscriptNotification((sender, obj) =>
             {
@@ -81,12 +85,20 @@ namespace Biker.Views
                     await myWebview?.EvaluateJavaScriptAsync($"onSendNotification('{obj.NotiKey}',{obj.Params});");
                 });
             });
+
+            myWebview.EvaluateJavaScriptAsync("refreshOnGoBack();");
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
             NotificationService.UnSubscriptNotification();
+        }
+
+        public void ChangePage(string page, object parameters)
+        {
+            var htmlSource = WebviewService.GetHtmlPathByName(page);
+            myWebview.Source = $"{htmlSource}{WebviewService.ConvertObjectToUrlParameters(parameters)}";
         }
     }
 }

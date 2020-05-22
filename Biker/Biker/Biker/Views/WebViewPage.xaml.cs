@@ -1,4 +1,5 @@
-﻿using Biker.Services;
+﻿using Biker.Models;
+using Biker.Services;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
@@ -20,26 +21,52 @@ namespace Biker.Views
 
             var htmlSource = WebviewService.GetHtmlPathByName(pageName);
 
-            myWebview.RegisterNativeFunction("NavigateToPage", async page =>
-            {
-                return await Task.FromResult(new object[] { false });
-            });
-
-            myWebview.RegisterNativeFunction("GetBikerId", async param =>
-            {
-                var biker = BikerService.GetBikerInfo();
-                return await Task.FromResult(new object[] { biker._id });
-            });
-
-            myWebview.RegisterCallback("SetPageTitle", title =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    Title = title;
-                });
-            });
+            RegisterWebviewBaseFunction();
 
             myWebview.Source = $"{htmlSource}{WebviewService.ConvertObjectToUrlParameters(parameters)}";
+        }
+
+        private void RegisterWebviewBaseFunction()
+        {
+            myWebview.RegisterNativeFunction("NavigateToPage", NavigateToPage);
+            myWebview.RegisterNativeFunction("GetBikerId", GetBikerId);
+            myWebview.RegisterCallback("SetPageTitle", SetPageTitle);
+            myWebview.RegisterCallback("ExecuteNotiIfExist", ExecuteNotiIfExist);
+            myWebview.RegisterCallback("RemoveNotificationChannel", RemoveNotificationChannel);
+        }
+
+        private async Task<object[]> NavigateToPage(string param)
+        {
+            var paramObject = JsonConvert.DeserializeObject<NavigateToPageParameter>(param);
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await Navigation.PushAsync(new WebViewPage(paramObject.PageName, paramObject.Params));
+            });
+            return new object[] { true };
+        }
+
+        private async Task<object[]> GetBikerId(string param)
+        {
+            var biker = BikerService.GetBikerInfo();
+            return new object[] { biker._id };
+        }
+
+        private async void SetPageTitle(string title)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Title = title;
+            });
+        }
+
+        private async void ExecuteNotiIfExist(string notiChannel)
+        {
+            NotificationService.ExecuteNotificationIfExist(notiChannel);
+        }
+
+        private async void RemoveNotificationChannel(string notiChannel)
+        {
+            NotificationService.RemoveNotificationStack(notiChannel);
         }
 
         public async void GoBack()
@@ -59,7 +86,6 @@ namespace Biker.Views
         {
             base.OnAppearing();
             myWebview.Focus();
-            myWebview.EvaluateJavaScriptAsync("refreshOnGoBack();");
 
             NotificationService.SubscriptNotification((sender, obj) =>
             {
@@ -68,6 +94,8 @@ namespace Biker.Views
                     await myWebview?.EvaluateJavaScriptAsync($"onSendNotification('{obj.NotiKey}',{obj.Params});");
                 });
             });
+
+            myWebview.EvaluateJavaScriptAsync("refreshOnGoBack();");
         }
 
         protected override void OnDisappearing()
