@@ -15,10 +15,20 @@ namespace Biker.Views
         public MainPage()
         {
             InitializeComponent();
+            SetPage();
+        }
+
+        private async void SetPage()
+        {
+            var bikerInfo = BikerService.GetBikerInfo();
+
+            var bikerIsWorking = await BikerService.BikerIsWorking();
+            var startPage = bikerIsWorking ? "order-stage" : "home";
+            SidemenuService.UpdateSidemenuPage(SideMenuPageTitle.HomePage, startPage);
 
             myWebview.Accessors = new TheS.DevXP.XamForms.XWebViewAccessorCollection(
                 LocalContentAccessor.GetAppData(WebviewService.MCLocalStorageFolderName));
-            var htmlSource = WebviewService.GetHtmlPathByName("home");
+            var htmlSource = WebviewService.GetHtmlPathByName(startPage);
 
             myWebview.NavigateOrRequesting += (s, e) =>
             {
@@ -40,6 +50,7 @@ namespace Biker.Views
             myWebview.RegisterCallback("ExecuteNotiIfExist", ExecuteNotiIfExist);
             myWebview.RegisterCallback("RemoveNotificationChannel", RemoveNotificationChannel);
             myWebview.RegisterCallback("OpenMapDirection", OpenMapDirection);
+            myWebview.RegisterCallback("UpdateSidemenuItem", UpdateSidemenuItem);
         }
 
         private async Task<object[]> NavigateToPage(string param)
@@ -84,10 +95,16 @@ namespace Biker.Views
             NotificationService.RemoveNotificationStack(notiChannel);
         }
 
+
         private async void OpenMapDirection(string directionParam)
         {
             var latLon = JsonConvert.DeserializeObject<OpenDirectionParam>(directionParam);
             await GoogleMapService.OpenMapDirection(latLon.Latitude, latLon.Longitude);
+        }
+        private async void UpdateSidemenuItem(string param)
+        {
+            var sidemenu = JsonConvert.DeserializeObject<SideMenuItem>(param);
+            SidemenuService.UpdateSidemenuPage(sidemenu.Title, sidemenu.Page, sidemenu.Params);
         }
 
         protected override void OnAppearing()

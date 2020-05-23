@@ -18,12 +18,12 @@ namespace Biker.Views
         {
             InitializeComponent();
 
-            var menuList = new List<SideMenuItem>
-            {
-                new SideMenuItem{ Title = "HomePage", Page = "master" },
-                new SideMenuItem{ Title = "A", Page = "a",Params=new {id="0123", item ="Iamsidemenu" } },
-                new SideMenuItem{ Title = "A2", Page = "a2" }
-            };
+            var userProfile = BikerService.GetBikerInfo();
+
+            userProfileImage.Source = userProfile.profileImage;
+            userProfileName.Text = userProfile.Name;
+
+            var menuList = SidemenuService.GetSidemenuItem();
 
             ListViewMenu.ItemsSource = menuList;
             ListViewMenu.ItemSelected += (sender, e) =>

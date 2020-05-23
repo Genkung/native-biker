@@ -14,8 +14,8 @@
                 <RowDefinition Height="50"></RowDefinition>
             </Grid.RowDefinitions>
             <StackLayout Grid.Row="0" Orientation="Horizontal" BackgroundColor="{StaticResource OrangeColor}" VerticalOptions="FillAndExpand" Padding="10,50,10,10">
-                <controls:CircleImage Source="https://lh3.googleusercontent.com/a-/AOh14GimGrUGVCSzeSo3yP0osuIV9yZZqf-Xb6rkMUdM=s96-c-rg-br100"/>
-                <Label FontSize="Medium" TextColor="White" Text="John Doe" Margin="10,10,0,0"/>
+                <controls:CircleImage x:Name="userProfileImage"/>
+                <Label x:Name="userProfileName" FontSize="Medium" TextColor="White" Margin="10,10,0,0"/>
             </StackLayout>
             <ListView x:Name="ListViewMenu" Grid.Row="1" VerticalOptions="FillAndExpand" HasUnevenRows="True" SeparatorVisibility="None" BackgroundColor="{StaticResource SideMenuColor}">
                 <ListView.ItemTemplate>
