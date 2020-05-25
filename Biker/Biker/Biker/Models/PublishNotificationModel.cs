@@ -6,7 +6,7 @@ namespace Biker.Models
 {
     public class PublishNotificationModel
     {
-        public string NotiKey { get; set; }
+        public string NotiChannel { get; set; }
         public object Params { get; set; }
     }
 }

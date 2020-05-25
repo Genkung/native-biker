@@ -28,7 +28,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Label  Grid.Row="2" Text="ออกจากระบบ" FontAttributes="Bold" VerticalOptions="CenterAndExpand" Padding="10"/>
+            <Label  Grid.Row="2" Text="ออกจากระบบ" FontAttributes="Bold" FontSize="Medium" VerticalOptions="CenterAndExpand" Padding="10"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

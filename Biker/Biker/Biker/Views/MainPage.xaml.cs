@@ -116,7 +116,7 @@ namespace Biker.Views
             {
                 Device.BeginInvokeOnMainThread(async () =>
                 {
-                    await myWebview?.EvaluateJavaScriptAsync($"onSendNotification('{obj.NotiKey}',{obj.Params});");
+                    await myWebview?.EvaluateJavaScriptAsync($"onSendNotification('{obj.NotiChannel}',{obj.Params});");
                 });
             });
 

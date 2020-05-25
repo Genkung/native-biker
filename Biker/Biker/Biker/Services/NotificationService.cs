@@ -20,7 +20,7 @@ namespace Biker.Services
             {
                 var sendNoti = new PublishNotificationModel
                 {
-                    NotiKey = notiChannel,
+                    NotiChannel = notiChannel,
                     Params = NotificatiionStack.GetValueOrDefault(notiChannel)
                 };
                 MessagingCenter.Send(obj, MessagingChannel.SendNotification, sendNoti);
