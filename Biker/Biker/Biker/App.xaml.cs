@@ -37,7 +37,7 @@ namespace Biker
         protected override void OnStart()
         {
             IsInForeground = true;
-            OneSignal.Current.StartInit("bd24274c-4778-491a-b45f-4185b2a0110f")//TODO: insert ID here
+            OneSignal.Current.StartInit("bd24274c-4778-491a-b45f-4185b2a0110f")
                 .InFocusDisplaying(Com.OneSignal.Abstractions.OSInFocusDisplayOption.None)
                 .HandleNotificationReceived(HandleNotificationReceived)
                 .HandleNotificationOpened(HandleNotificationOpened)

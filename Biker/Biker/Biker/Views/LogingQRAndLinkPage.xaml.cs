@@ -18,9 +18,24 @@ namespace Biker.Views
         {
             InitializeComponent();
 
-            GotoMain.Clicked += async (s, e) =>
+            b1.Clicked += async (s, e) =>
             {
                 await BikerService.SetBikerInfo("1");
+                await NotificationService.RegisterDevice();
+                NavigateToMasterDetail();
+            };
+
+            b2.Clicked += async (s, e) =>
+            {
+                await BikerService.SetBikerInfo("2");
+                await NotificationService.RegisterDevice();
+                NavigateToMasterDetail();
+            };
+
+            b3.Clicked += async (s, e) =>
+            {
+                await BikerService.SetBikerInfo("3");
+                await NotificationService.RegisterDevice();
                 NavigateToMasterDetail();
             };
         }

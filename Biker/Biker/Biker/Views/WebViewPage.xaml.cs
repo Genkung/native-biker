@@ -36,6 +36,7 @@ namespace Biker.Views
             myWebview.RegisterCallback("ExecuteNotiIfExist", ExecuteNotiIfExist);
             myWebview.RegisterCallback("RemoveNotificationChannel", RemoveNotificationChannel);
             myWebview.RegisterCallback("OpenMapDirection", OpenMapDirection);
+            myWebview.RegisterCallback("PhoneCall", PhoneCall);
             myWebview.RegisterCallback("UpdateSidemenuItem", UpdateSidemenuItem);
         }
 
@@ -88,6 +89,11 @@ namespace Biker.Views
         {
             var latLon = JsonConvert.DeserializeObject<OpenDirectionParam>(directionParam);
             await GoogleMapService.OpenMapDirection(latLon.Latitude, latLon.Longitude);
+        }
+
+        private async void PhoneCall(string phoneNumber)
+        {
+            PhoneService.Call(phoneNumber);
         }
 
         private async void UpdateSidemenuItem(string param)
