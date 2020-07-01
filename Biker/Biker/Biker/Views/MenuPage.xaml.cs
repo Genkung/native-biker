@@ -32,7 +32,7 @@ namespace Biker.Views
 
                 var page = ((SideMenuItem)e.SelectedItem).Page;
                 var parameters = ((SideMenuItem)e.SelectedItem).Params;
-                PageService.GetRootPage().SideMenuChangePage(page, parameters);
+                PageService.GetMasterDetailPage().SideMenuChangePage(page, parameters);
                 ((MasterDetailPage)Application.Current.MainPage).IsPresented = false;
                 ListViewMenu.SelectedItem = null;
             };
@@ -46,6 +46,7 @@ namespace Biker.Views
         private async Task Logout() 
         {
             await NotificationService.UnRegisterDevice();
+            await AuthService.Logout();
             App.Current.MainPage = new LoginPage();
         } 
     }

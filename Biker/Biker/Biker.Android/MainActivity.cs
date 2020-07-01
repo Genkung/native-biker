@@ -22,6 +22,7 @@ namespace Biker.Droid
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+
             LoadApplication(new App());
 
             Xamarin.Forms.MessagingCenter.Subscribe<MainPage, string>(this, Models.MessagingChannel.HomeReady, (sub, msg) =>
@@ -30,6 +31,7 @@ namespace Biker.Droid
                 SetSupportActionBar(toolbar);
             });
         }
+
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -57,6 +59,13 @@ namespace Biker.Droid
             }
         }
 
+        protected override void OnResume()
+        {
+            base.OnResume();
+
+            Xamarin.Essentials.Platform.OnResume();
+        }
+
         public override void OnBackPressed()
         {
             if (PageService.GetCurrentPage() is WebViewPage page)
@@ -69,4 +78,11 @@ namespace Biker.Droid
             }
         }
     }
+
+    [Activity(NoHistory = true, LaunchMode = LaunchMode.SingleTop)]
+    [IntentFilter(new[] { "android.intent.action.VIEW" }, Categories = new[] { "android.intent.category.DEFAULT", "android.intent.category.BROWSABLE" }, DataScheme = "googlexauth")]
+    public class WebAuthenticationCallbackActivity : Xamarin.Essentials.WebAuthenticatorCallbackActivity
+    {
+    }
+
 }

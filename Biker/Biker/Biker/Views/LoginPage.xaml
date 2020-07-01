@@ -4,10 +4,15 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              Title="Login"
-             x:Class="Biker.Views.LoginPage">
+             x:Class="Biker.Views.LoginPage"
+             NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
-        <StackLayout>
-            <Button x:Name="loginBtn" Text="Login" BackgroundColor="Orange" TextColor="White" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" WidthRequest="200"/>
+        <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+            <Label Text="Login" FontSize="Title" FontAttributes="Bold" TextColor="Orange" HorizontalOptions="CenterAndExpand" Margin="30,30,30,30"/>
+            <StackLayout VerticalOptions="CenterAndExpand" HeightRequest="100">
+                <Button x:Name="gloginBtn" Text="Login with Google" BackgroundColor="Orange" TextColor="White" WidthRequest="200" VerticalOptions="CenterAndExpand"/>
+                <ActivityIndicator x:Name="loadingLogin" Color="Orange" IsRunning="False" IsVisible="False" VerticalOptions="CenterAndExpand"/>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

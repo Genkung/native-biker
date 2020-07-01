@@ -12,17 +12,19 @@ namespace Biker.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : ContentPage
     {
-        public MainPage()
+        private bool bikerIsWorking;
+
+        public MainPage(bool bikerIsWorking)
         {
+            this.bikerIsWorking = bikerIsWorking;
             InitializeComponent();
             SetPage();
         }
 
-        private async void SetPage()
+        private void SetPage()
         {
             var bikerInfo = BikerService.GetBikerInfo();
 
-            var bikerIsWorking = await BikerService.BikerIsWorking();
             var startPage = bikerIsWorking ? "order-stage" : "home";
             SidemenuService.UpdateSidemenuPage(SideMenuPageTitle.HomePage, startPage);
 

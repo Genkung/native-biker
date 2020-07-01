@@ -90,7 +90,7 @@ namespace Biker
             {
                 notificationData.ForEach(it =>
                 {
-                    NotificationService.AddNotificationStack(it.Key, it.Value);
+                    NotificationService.AddNotificationStack(it.Key, it.Value.ToString());
                     NotificationService.PublishNotification(it.Key);
                 });
             }

@@ -1,10 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using Biker.Views;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace Biker.Services
 {
@@ -12,17 +14,53 @@ namespace Biker.Services
     {
         private static readonly HttpClient client = new HttpClient();
 
-        static HttpClientService() { }
+        public static void SetClientBearerIfExistOrUnExpire(string token)
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
+
+        private static bool hasAuthorization => string.IsNullOrWhiteSpace(client.DefaultRequestHeaders.Authorization.ToString());
+
+        private static bool needLogin => hasAuthorization && AuthService.HasExpired;
+
+        private static async Task LogoutIfNeeded() 
+        {
+            await PageService.DisplayAlert("แจ้งเตือน", "session หมดอายุ กรุณา login ใหม่อีกครั้ง", "ปิด");
+            //TODO: Logout
+            PageService.SetRoot(new LoginPage());
+        }
 
         public static async Task<T> Get<T>(string url)
         {
+            if (needLogin)
+            {
+                await LogoutIfNeeded();
+                return default(T);
+            }
+
             var stringTask = await client.GetStringAsync(url);
             var result = JsonConvert.DeserializeObject<T>(stringTask);
             return result;
         }
 
+        public static async Task Logout()
+        {
+            DependencyService.Get<IClearCookies>().Clear();
+            var url = "https://oauth2.googleapis.com/revoke";
+            var sendData = new List<KeyValuePair<string, string>>();
+            sendData.Add(new KeyValuePair<string, string>("token", AuthService.GetAccessToken()));
+            var req = new HttpRequestMessage(HttpMethod.Post, url) { Content = new FormUrlEncodedContent(sendData) };
+            var res = await client.SendAsync(req);
+        }
+
         public static async Task Post(string url, object body)
         {
+            if (needLogin)
+            {
+                await LogoutIfNeeded();
+                return;
+            }
+
             var json = JsonConvert.SerializeObject(body);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -31,6 +69,12 @@ namespace Biker.Services
 
         public static async Task Put(string url, object body)
         {
+            if (needLogin)
+            {
+                await LogoutIfNeeded();
+                return;
+            }
+
             var json = JsonConvert.SerializeObject(body);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
