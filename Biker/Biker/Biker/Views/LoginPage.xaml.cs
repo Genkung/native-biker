@@ -36,7 +36,7 @@ namespace Biker.Views
                     }
                     catch (Exception ex)
                     {
-                        await PageService.DisplayError();
+                        HttpClientService.HandleHttpCatch(ex);
                         SetCanLogin(true);
                     }
                 }

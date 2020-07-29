@@ -10,10 +10,16 @@ namespace Biker.Services
     {
         public static async Task OpenMapDirection(double lat, double lon)
         {
-            var location = new Location(lat, lon);
-            var options = new MapLaunchOptions { NavigationMode = NavigationMode.Driving };
-
-            await Map.OpenAsync(location, options);
+            try
+            {
+                var location = new Location(lat, lon);
+                var options = new MapLaunchOptions { NavigationMode = NavigationMode.Driving };
+                await Map.OpenAsync(location, options);
+            }
+            catch (Exception e)
+            {
+                await PageService.DisplayAlert("แจ้งเตือน", "ไม่สามารถเปิดแผนที่ได้ กรุราลองใหม่อีกครัง", "ปิด");
+            }
         }
     }
 }

@@ -47,6 +47,7 @@ namespace Biker.Views
             myWebview.RegisterNativeFunction("NavigateToPage", NavigateToPage);
             myWebview.RegisterNativeFunction("GetBikerId", GetBikerId);
             myWebview.RegisterNativeFunction("GetTokenIfExist", GetTokenIfExist);
+            myWebview.RegisterCallback("Logout", Logout);
             myWebview.RegisterCallback("Goback", Goback);
             myWebview.RegisterCallback("PopToRoot", PopToRoot);
             myWebview.RegisterCallback("SetPageTitle", SetPageTitle);
@@ -79,6 +80,11 @@ namespace Biker.Views
             var token = hasExpired ? "" : AuthService.GetAccessToken();
             var result = new { HasExpired = hasExpired, Token = token };
             return new object[] { result };
+        }
+
+        private async void Logout(string param) 
+        {
+            await AuthService.Logout();
         }
 
         private async void Goback(string param)

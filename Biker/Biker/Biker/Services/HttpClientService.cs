@@ -21,11 +21,11 @@ namespace Biker.Services
 
         private static bool hasAuthorization => string.IsNullOrWhiteSpace(client.DefaultRequestHeaders.Authorization.ToString());
 
-        private static bool needLogin => hasAuthorization && AuthService.HasExpired;
+        //private static bool needLogin => hasAuthorization && AuthService.HasExpired;
+        private static bool needLogin => AuthService.HasExpired;
 
-        private static async Task LogoutIfNeeded() 
+        private static async Task LogoutIfNeeded()
         {
-            await PageService.DisplayAlert("แจ้งเตือน", "session หมดอายุ กรุณา login ใหม่อีกครั้ง", "ปิด");
             //TODO: Logout
             PageService.SetRoot(new LoginPage());
         }
@@ -35,7 +35,7 @@ namespace Biker.Services
             if (needLogin)
             {
                 await LogoutIfNeeded();
-                return default(T);
+                throw new System.ArgumentException("session หมดอายุ กรุณา login ใหม่อีกครั้ง", "expired");
             }
 
             var stringTask = await client.GetStringAsync(url);
@@ -58,7 +58,7 @@ namespace Biker.Services
             if (needLogin)
             {
                 await LogoutIfNeeded();
-                return;
+                throw new System.ArgumentException("session หมดอายุ กรุณา login ใหม่อีกครั้ง", "expired");
             }
 
             var json = JsonConvert.SerializeObject(body);
@@ -72,13 +72,25 @@ namespace Biker.Services
             if (needLogin)
             {
                 await LogoutIfNeeded();
-                return;
+                throw new System.ArgumentException("session หมดอายุ กรุณา login ใหม่อีกครั้ง", "expired");
             }
 
             var json = JsonConvert.SerializeObject(body);
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
             await client.PutAsync(url, data);
+        }
+
+        public static async void HandleHttpCatch(Exception e)
+        {
+            if (e is ArgumentException arg)
+            {
+                await PageService.DisplayAlert("แจ้งเตือน", arg.Message, "ปิด");
+            }
+            else
+            {
+                await PageService.DisplayError();
+            }
         }
     }
 }

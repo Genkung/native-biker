@@ -38,17 +38,17 @@ namespace Biker.Services
         }
 
         public static async Task<string> DisplayActionSheet(string title, string cancel, string destruction, params string[] buttons) {
-            return await GetCurrentPage().DisplayActionSheet(title,cancel,destruction,buttons);
+            return await App.Current.MainPage.DisplayActionSheet(title,cancel,destruction,buttons);
         }
 
         public static async Task DisplayAlert(string title, string message, string cancel)
         {
-            await GetCurrentPage().DisplayAlert(title, message, cancel);
+            await App.Current.MainPage.DisplayAlert(title, message, cancel);
         }
 
         public static async Task<bool> DisplayAlert(string title, string message, string accept, string cancel)
         {
-            return await GetCurrentPage().DisplayAlert(title, message, accept, cancel);
+            return await App.Current.MainPage.DisplayAlert(title, message, accept, cancel);
         }
 
         public static async Task DisplayError()
