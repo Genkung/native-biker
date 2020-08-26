@@ -32,6 +32,7 @@ namespace Biker.Views
             myWebview.RegisterNativeFunction("GetBikerId", GetBikerId);
             myWebview.RegisterCallback("Goback", Goback);
             myWebview.RegisterCallback("PopToRoot", PopToRoot);
+            myWebview.RegisterCallback("SetRootPage", SetRootPage);
             myWebview.RegisterCallback("SetPageTitle", SetPageTitle);
             myWebview.RegisterCallback("ExecuteNotiIfExist", ExecuteNotiIfExist);
             myWebview.RegisterCallback("RemoveNotificationChannel", RemoveNotificationChannel);
@@ -50,6 +51,15 @@ namespace Biker.Views
             Device.BeginInvokeOnMainThread(async () =>
             {
                 GoBack();
+            });
+        }
+
+        private async void SetRootPage(string param)
+        {
+            var paramObject = JsonConvert.DeserializeObject<NavigateToPageParameter>(param);
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                ((MasterDetailPage)Application.Current.MainPage).Detail = new NavigationPage(new MainPage(paramObject.PageName));
             });
         }
 

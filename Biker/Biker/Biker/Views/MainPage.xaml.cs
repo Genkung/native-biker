@@ -12,18 +12,14 @@ namespace Biker.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : ContentPage
     {
-        public MainPage()
+        public MainPage(string startPage, object parameters = null)
         {
             InitializeComponent();
-            SetPage();
+            SetPage(startPage, parameters);
         }
 
-        private async void SetPage()
+        private async void SetPage(string startPage, object parameters)
         {
-            var bikerInfo = BikerService.GetBikerInfo();
-
-            var bikerIsWorking = await BikerService.BikerIsWorking();
-            var startPage = bikerIsWorking ? "order-stage" : "home";
             SidemenuService.UpdateSidemenuPage(SideMenuPageTitle.HomePage, startPage);
 
             myWebview.Accessors = new TheS.DevXP.XamForms.XWebViewAccessorCollection(
@@ -37,7 +33,7 @@ namespace Biker.Views
 
             RegisterWebviewBaseFunction();
 
-            myWebview.Source = htmlSource;
+            myWebview.Source = $"{htmlSource}{WebviewService.ConvertObjectToUrlParameters(parameters)}"; ;
         }
 
         private void RegisterWebviewBaseFunction()
@@ -46,6 +42,7 @@ namespace Biker.Views
             myWebview.RegisterNativeFunction("GetBikerId", GetBikerId);
             myWebview.RegisterCallback("Goback", Goback);
             myWebview.RegisterCallback("PopToRoot", PopToRoot);
+            myWebview.RegisterCallback("SetRootPage", SetRootPage);
             myWebview.RegisterCallback("SetPageTitle", SetPageTitle);
             myWebview.RegisterCallback("ExecuteNotiIfExist", ExecuteNotiIfExist);
             myWebview.RegisterCallback("RemoveNotificationChannel", RemoveNotificationChannel);
@@ -76,6 +73,16 @@ namespace Biker.Views
 
         private async void PopToRoot(string param)
         {
+        }
+
+        private async void SetRootPage(string param)
+        {
+            var paramObject = JsonConvert.DeserializeObject<NavigateToPageParameter>(param);
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                var htmlSource = WebviewService.GetHtmlPathByName(paramObject.PageName);
+                myWebview.Source = $"{htmlSource}{WebviewService.ConvertObjectToUrlParameters(paramObject.Params)}"; ;
+            });
         }
 
         private async void SetPageTitle(string title)

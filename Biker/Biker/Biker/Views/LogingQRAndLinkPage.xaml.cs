@@ -20,31 +20,57 @@ namespace Biker.Views
 
             b1.Clicked += async (s, e) =>
             {
-                await BikerService.SetBikerInfo("1");
-                await NotificationService.RegisterDevice();
-                NavigateToMasterDetail();
+                try
+                {
+                    await BikerService.SetBikerInfo("1");
+                    await NotificationService.RegisterDevice();
+                    var bikerIsWorking = await BikerService.BikerIsWorking();
+                    NavigateToMasterDetail(bikerIsWorking);
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("แจ้งเตือน", "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", "ปิด");
+                }
             };
 
             b2.Clicked += async (s, e) =>
             {
-                await BikerService.SetBikerInfo("2");
-                await NotificationService.RegisterDevice();
-                NavigateToMasterDetail();
+                try
+                {
+                    await BikerService.SetBikerInfo("2");
+                    await NotificationService.RegisterDevice();
+                    var bikerIsWorking = await BikerService.BikerIsWorking();
+                    NavigateToMasterDetail(bikerIsWorking);
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("แจ้งเตือน", "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", "ปิด");
+                }
             };
 
             b3.Clicked += async (s, e) =>
             {
-                await BikerService.SetBikerInfo("3");
-                await NotificationService.RegisterDevice();
-                NavigateToMasterDetail();
+                try
+                {
+                    await BikerService.SetBikerInfo("3");
+                    await NotificationService.RegisterDevice();
+                    var bikerIsWorking = await BikerService.BikerIsWorking();
+                    NavigateToMasterDetail(bikerIsWorking);
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("แจ้งเตือน", "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", "ปิด");
+                }
             };
         }
 
-        private void NavigateToMasterDetail() 
+        private void NavigateToMasterDetail(bool bikerIsWorking)
         {
             SidemenuService.SetUpSideMenu();
 
-            var homePage = new NavigationPage(new MainPage());
+            var startPage = bikerIsWorking ? "order-stage" : "home";
+
+            var homePage = new NavigationPage(new MainPage(startPage));
             var masterDetailPage = new MasterDetailPage
             {
                 Detail = homePage,

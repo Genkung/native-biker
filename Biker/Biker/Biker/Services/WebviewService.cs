@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using TheS.DevXP.XamForms.Controls;
 
 namespace Biker.Services
 {
@@ -37,5 +38,19 @@ namespace Biker.Services
             }
             return result.ToString();
         }
+
+        //public void RegisterServices(XWebView myWebview) 
+        //{
+        //    myWebview.RegisterNativeFunction("NavigateToPage", NavigateToPage);
+        //    myWebview.RegisterNativeFunction("GetBikerId", GetBikerId);
+        //    myWebview.RegisterCallback("Goback", Goback);
+        //    myWebview.RegisterCallback("PopToRoot", PopToRoot);
+        //    myWebview.RegisterCallback("SetPageTitle", SetPageTitle);
+        //    myWebview.RegisterCallback("ExecuteNotiIfExist", ExecuteNotiIfExist);
+        //    myWebview.RegisterCallback("RemoveNotificationChannel", RemoveNotificationChannel);
+        //    myWebview.RegisterCallback("OpenMapDirection", OpenMapDirection);
+        //    myWebview.RegisterCallback("PhoneCall", PhoneCall);
+        //    myWebview.RegisterCallback("UpdateSidemenuItem", UpdateSidemenuItem);
+        //}
     }
 }
