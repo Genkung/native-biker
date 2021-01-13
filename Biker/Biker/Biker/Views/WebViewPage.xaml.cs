@@ -39,7 +39,7 @@ namespace Biker.Views
         {
             Device.BeginInvokeOnMainThread(async () =>
             {
-                GoBack();
+                XamarinGoBack();
             });
         }
 
@@ -60,7 +60,7 @@ namespace Biker.Views
             });
         }
 
-        public async void GoBack()
+        public async void XamarinGoBack()
         {
             wWebview.RefreshCanGoBackForward();
             if (wWebview.CanGoBack)

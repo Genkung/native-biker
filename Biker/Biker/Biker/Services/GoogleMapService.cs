@@ -18,7 +18,7 @@ namespace Biker.Services
             }
             catch (Exception e)
             {
-                await PageService.DisplayAlert("แจ้งเตือน", "ไม่สามารถเปิดแผนที่ได้ กรุราลองใหม่อีกครัง", "ปิด");
+                await PageService.DisplayAlert("แจ้งเตือน", "ไม่สามารถเปิดแผนที่ได้ กรุณาลองใหม่อีกครัง", "ปิด");
             }
         }
     }

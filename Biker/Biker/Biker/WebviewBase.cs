@@ -18,12 +18,10 @@ namespace Biker
         {
         }
 
-        public void AddXWebview(XWebView xWebview) 
+        public void AddXWebview(XWebView xWebview)
         {
             this.xWebview = xWebview;
         }
-
-        public abstract void InitWebview(string pageName, object parameter);
 
         public void RegisterWebviewBaseFunction(XWebView xWebview)
         {
@@ -39,6 +37,8 @@ namespace Biker
             xWebview.RegisterCallback("PhoneCall", PhoneCall);
             xWebview.RegisterCallback("UpdateSidemenuItem", UpdateSidemenuItem);
         }
+
+        public abstract void InitWebview(string pageName, object parameter);
 
         public abstract Task<object[]> NavigateToPage(string param);
 
@@ -82,21 +82,23 @@ namespace Biker
             {
                 await GoogleMapService.OpenMapDirection(latLon.Latitude, latLon.Longitude);
             }
+            else { await DisplayAlert("แจ้งเตือน", "ไม่สามารถเปิดแผนที่ได้ กรุณาลองใหม่อีกครัง", "ปิด"); }
         }
 
-        public async void PhoneCall(string directionParam) 
+        public async void PhoneCall(string phoneParam)
         {
-            var latLon = ConvertParameterFromWebView<OpenDirectionParam>(directionParam);
-            if (latLon != null)
+            var phome = ConvertParameterFromWebView<PhoneCallParameter>(phoneParam);
+            if (phome != null)
             {
-                await GoogleMapService.OpenMapDirection(latLon.Latitude, latLon.Longitude);
+                PhoneService.Call(phome?.PhoneNumber);
             }
+            else { await DisplayAlert("แจ้งเตือน", "ขออภัย เกิดข้อผิดพลาด", "ปิด"); }
         }
 
         public async void UpdateSidemenuItem(string param)
         {
             var sidemenu = ConvertParameterFromWebView<SideMenuItem>(param);
-            SidemenuService.UpdateSidemenuPage(sidemenu?.Title, sidemenu?.Page, sidemenu?.Params);
+            SidemenuService.UpdateSidemenuPage(sidemenu?.Title, sidemenu?.Page, sidemenu.Params);
         }
 
         public T ConvertParameterFromWebView<T>(string parameter)

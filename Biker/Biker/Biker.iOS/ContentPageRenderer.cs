@@ -32,7 +32,7 @@ namespace Biker.iOS
             var backButtonItemWithImage = new UIBarButtonItem(backBtnImage, UIBarButtonItemStyle.Plain, (s, e) =>
             {
                 var page = (ContentPage)Element as WebViewPage;
-                page.GoBack();
+                page.XamarinGoBack();
             })
             {
                 ImageInsets = new UIEdgeInsets(0f, -8f, 0f, 0f)
