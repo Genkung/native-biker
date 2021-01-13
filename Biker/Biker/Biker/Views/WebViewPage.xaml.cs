@@ -10,43 +10,32 @@ using Xamarin.Forms.Xaml;
 namespace Biker.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class WebViewPage : ContentPage
+    public partial class WebViewPage : WebviewBase
     {
-        public WebViewPage(string pageName, object parameters)
+        public WebViewPage(string pageName, object parameters) : base(pageName, parameters)
         {
             InitializeComponent();
+            AddXWebview(wWebview);
+            InitWebview(pageName, parameters);
+            RegisterWebviewBaseFunction(wWebview);
+        }
 
-            myWebview.Accessors = new TheS.DevXP.XamForms.XWebViewAccessorCollection(
+        public override void InitWebview(string page, object parameters)
+        {
+            wWebview.Accessors = new TheS.DevXP.XamForms.XWebViewAccessorCollection(
                 LocalContentAccessor.GetAppData(WebviewService.MCLocalStorageFolderName));
 
-            var htmlSource = WebviewService.GetHtmlPathByName(pageName);
+            var htmlSource = WebviewService.GetHtmlPathByName(page);
 
-            RegisterWebviewBaseFunction();
-
-            myWebview.Source = $"{htmlSource}{WebviewService.ConvertObjectToUrlParameters(parameters)}";
+            wWebview.Source = $"{htmlSource}{WebviewService.ConvertObjectToUrlParameters(parameters)}";
         }
 
-        private void RegisterWebviewBaseFunction()
-        {
-            myWebview.RegisterNativeFunction("NavigateToPage", NavigateToPage);
-            myWebview.RegisterNativeFunction("GetBikerId", GetBikerId);
-            myWebview.RegisterCallback("Goback", Goback);
-            myWebview.RegisterCallback("PopToRoot", PopToRoot);
-            myWebview.RegisterCallback("SetRootPage", SetRootPage);
-            myWebview.RegisterCallback("SetPageTitle", SetPageTitle);
-            myWebview.RegisterCallback("ExecuteNotiIfExist", ExecuteNotiIfExist);
-            myWebview.RegisterCallback("RemoveNotificationChannel", RemoveNotificationChannel);
-            myWebview.RegisterCallback("OpenMapDirection", OpenMapDirection);
-            myWebview.RegisterCallback("PhoneCall", PhoneCall);
-            myWebview.RegisterCallback("UpdateSidemenuItem", UpdateSidemenuItem);
-        }
-
-        private async Task<object[]> NavigateToPage(string param)
+        public override async Task<object[]> NavigateToPage(string param)
         {
             return new object[] { false };
         }
 
-        private async void Goback(string param)
+        public override async void Goback(string param)
         {
             Device.BeginInvokeOnMainThread(async () =>
             {
@@ -54,7 +43,15 @@ namespace Biker.Views
             });
         }
 
-        private async void SetRootPage(string param)
+        public override async void PopToRoot(string param)
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await Navigation.PopAsync(true);
+            });
+        }
+
+        public override async void SetRootPage(string param)
         {
             var paramObject = JsonConvert.DeserializeObject<NavigateToPageParameter>(param);
             Device.BeginInvokeOnMainThread(() =>
@@ -63,83 +60,12 @@ namespace Biker.Views
             });
         }
 
-        private async void PopToRoot(string param)
-        {
-            Device.BeginInvokeOnMainThread(async () =>
-            {
-                await Navigation.PopAsync(true);
-            });
-        }
-
-        private async Task<object[]> GetBikerId(string param)
-        {
-            var biker = BikerService.GetBikerInfo();
-            return new object[] { biker._id };
-        }
-
-        private async void SetPageTitle(string title)
-        {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                Title = title;
-            });
-        }
-
-        private async void ExecuteNotiIfExist(string notiChannel)
-        {
-            NotificationService.ExecuteNotificationIfExist(notiChannel);
-        }
-
-        private async void RemoveNotificationChannel(string notiChannel)
-        {
-            NotificationService.RemoveNotificationStack(notiChannel);
-        }
-
-        private async void OpenMapDirection(string directionParam)
-        {
-            var latLon = JsonConvert.DeserializeObject<OpenDirectionParam>(directionParam);
-            await GoogleMapService.OpenMapDirection(latLon.Latitude, latLon.Longitude);
-        }
-
-        private async void PhoneCall(string phoneNumber)
-        {
-            PhoneService.Call(phoneNumber);
-        }
-
-        private async void UpdateSidemenuItem(string param)
-        {
-            var sidemenu = JsonConvert.DeserializeObject<SideMenuItem>(param);
-            SidemenuService.UpdateSidemenuPage(sidemenu.Title, sidemenu.Page, sidemenu.Params);
-        }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            myWebview.Focus();
-
-            NotificationService.SubscriptNotification((sender, obj) =>
-            {
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    await myWebview?.EvaluateJavaScriptAsync($"onSendNotification('{obj.NotiChannel}',{obj.Params});");
-                });
-            });
-
-            myWebview.EvaluateJavaScriptAsync("refreshOnGoBack();");
-        }
-
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-            NotificationService.UnSubscriptNotification();
-        }
-
         public async void GoBack()
         {
-            myWebview.RefreshCanGoBackForward();
-            if (myWebview.CanGoBack)
+            wWebview.RefreshCanGoBackForward();
+            if (wWebview.CanGoBack)
             {
-                myWebview.GoBack();
+                wWebview.GoBack();
             }
             else
             {
