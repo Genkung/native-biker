@@ -4,7 +4,8 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              Title="Login"
-             x:Class="Biker.Views.LoginPage">
+             x:Class="Biker.Views.LoginPage"
+             BackgroundColor="White">
     <ContentPage.Content>
         <StackLayout>
             <Button x:Name="loginBtn" Text="Login" BackgroundColor="Orange" TextColor="White" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" WidthRequest="200"/>
