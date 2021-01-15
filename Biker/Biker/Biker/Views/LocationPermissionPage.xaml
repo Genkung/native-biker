@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Biker.Views.LocationPermissionPage">
+    <Grid>
+        <StackLayout Spacing="0">
+            <StackLayout VerticalOptions="StartAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="White" Padding="10">
+                <Label Text="กรุณาเปิดการตั้งค่าตำแหน่งของคุณ" FontSize="Large" TextColor="{StaticResource BlackColor}" FontAttributes="Bold"/>
+                <Label Text="กรุณาเปิดการตั้งค่าตำแหน่งของคุณเพื่อการใช้บริการรับสินค้าที่ถูกต้อง" FontSize="Medium"/>
+                <Image Source="maplation" VerticalOptions="CenterAndExpand" Margin="40" WidthRequest="57" HeightRequest="50"/>
+            </StackLayout>
+            <Button x:Name="permissionBtn" Text="ตกลง"  Style="{StaticResource RedBottomButtonStyle}" Margin="-5,-6,-5,-6"/>
+        </StackLayout>
+    </Grid>
+</ContentPage>

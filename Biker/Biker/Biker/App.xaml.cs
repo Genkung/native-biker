@@ -1,4 +1,5 @@
-﻿using Biker.Models;
+﻿using Biker.Events;
+using Biker.Models;
 using Biker.Services;
 using Biker.Views;
 using Com.OneSignal;
@@ -31,7 +32,20 @@ namespace Biker
             destinationFolder = Path.Combine(defaultDirPath, MCLocalStorageFolderName);
             DownloadZip("https://manadevfrom.blob.core.windows.net/zips/zip-biker.zip");
 
-            MainPage = new LoginPage();
+            NavigateToFirstPage();
+        }
+
+        private async void NavigateToFirstPage()
+        {
+            var isGpsReady = await GPSService.CanUseLocationService();
+            if (isGpsReady)
+            {
+                MainPage = new LoginPage();
+            }
+            else
+            {
+                MainPage = new LocationPermissionPage();
+            }
         }
 
         protected override void OnStart()
@@ -51,7 +65,10 @@ namespace Biker
 
         protected override void OnResume()
         {
-            IsInForeground = true;
+            if (MainPage is ContentPage) // Logedin and stay home page
+            {
+                AppEvent.Resume(this, MainPage);
+            }
         }
 
         private void DownloadZip(string DownloadFileURL)

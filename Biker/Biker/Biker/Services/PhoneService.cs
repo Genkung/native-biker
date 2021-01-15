@@ -15,15 +15,15 @@ namespace Biker.Services
             }
             catch (ArgumentNullException anEx)
             {
-                App.Current.MainPage.DisplayAlert("แจ้งเตือน", "ไม่พบหมายเลขที่ต้องการโทร", "ปิด");
+                PageService.DisplayAlert("แจ้งเตือน", "ไม่พบหมายเลขที่ต้องการโทร", "ปิด");
             }
             catch (FeatureNotSupportedException ex)
             {
-                App.Current.MainPage.DisplayAlert("แจ้งเตือน", "ไม่สามารถใช้งานระบบโทรศัพย์ได้", "ปิด");
+                PageService.DisplayAlert("แจ้งเตือน", "ไม่สามารถใช้งานระบบโทรศัพย์ได้", "ปิด");
             }
             catch (Exception ex)
             {
-                App.Current.MainPage.DisplayAlert("แจ้งเตือน", "ขออภัย เกิดข้อผิดพลาด", "ปิด");
+                PageService.DisplayAlert("แจ้งเตือน", "ขออภัย เกิดข้อผิดพลาด", "ปิด");
             }
         }
     }

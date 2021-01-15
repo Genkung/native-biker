@@ -27,6 +27,7 @@ namespace Biker
         {
             xWebview.RegisterNativeFunction("NavigateToPage", NavigateToPage);
             xWebview.RegisterNativeFunction("GetBikerId", GetBikerId);
+            xWebview.RegisterNativeFunction("GetCurrentLocation", GetCurrentLocation);
             xWebview.RegisterCallback("Goback", Goback);
             xWebview.RegisterCallback("PopToRoot", PopToRoot);
             xWebview.RegisterCallback("SetRootPage", SetRootPage);
@@ -47,6 +48,12 @@ namespace Biker
         public abstract void PopToRoot(string param);
 
         public abstract void SetRootPage(string param);
+
+        public async Task<object[]> GetCurrentLocation(string param) 
+        {
+            var location = await GPSService.GetCurrentLocation();
+            return new object[] { location };
+        }
 
         public async Task<object[]> GetBikerId(string param)
         {
@@ -80,9 +87,9 @@ namespace Biker
             var latLon = ConvertParameterFromWebView<OpenDirectionParam>(directionParam);
             if (latLon != null)
             {
-                await GoogleMapService.OpenMapDirection(latLon.Latitude, latLon.Longitude);
+                await GPSService.OpenMapDirection(latLon.Latitude, latLon.Longitude);
             }
-            else { await DisplayAlert("แจ้งเตือน", "ไม่สามารถเปิดแผนที่ได้ กรุณาลองใหม่อีกครัง", "ปิด"); }
+            else { PageService.DisplayAlert("แจ้งเตือน", "ไม่สามารถเปิดแผนที่ได้ กรุณาลองใหม่อีกครัง", "ปิด"); }
         }
 
         public async void PhoneCall(string phoneParam)
@@ -92,7 +99,7 @@ namespace Biker
             {
                 PhoneService.Call(phome?.PhoneNumber);
             }
-            else { await DisplayAlert("แจ้งเตือน", "ขออภัย เกิดข้อผิดพลาด", "ปิด"); }
+            else { PageService.DisplayAlert("แจ้งเตือน", "ขออภัย เกิดข้อผิดพลาด", "ปิด"); }
         }
 
         public async void UpdateSidemenuItem(string param)

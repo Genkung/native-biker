@@ -11,7 +11,9 @@
             <Color x:Key="DarkGrayColor">#3a3b44</Color>
             <Color x:Key="GrayColor">#4d4f5a</Color>
             <Color x:Key="LightGrayColor">#9191A3</Color>
+            <Color x:Key="BlackColor">#26282A</Color>
             <Color x:Key="GreenColor">#31aa04</Color>
+            <Color x:Key="WhiteColor">#ECEBF1</Color>
             <Color x:Key="OrangeColor">#fc7315</Color>
             <Color x:Key="CreamColor">#3a3b44</Color>
             <Style ApplyToDerivedTypes="true" TargetType="NavigationPage">
@@ -22,6 +24,22 @@
                         x:TypeArguments="Thickness"
                         Android="0"
                         iOS="10,0,0,0" />
+
+            <Style x:Key="RedBottomButtonStyle" TargetType="Button">
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="True" TargetType="Button">
+                        <Setter Property="TextColor" Value="#ffffff" />
+                        <Setter Property="BackgroundColor" Value="{StaticResource OrangeColor}" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False" TargetType="Button">
+                        <Setter Property="TextColor" Value="{StaticResource LightGrayColor}" />
+                        <Setter Property="BackgroundColor" Value="{StaticResource WhiteColor}" />
+                    </Trigger>
+                </Style.Triggers>
+                <Setter Property="BorderRadius" Value="0" />
+                <Setter Property="HeightRequest" Value="55" />
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

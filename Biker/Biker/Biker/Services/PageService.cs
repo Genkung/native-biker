@@ -37,9 +37,12 @@ namespace Biker.Services
             return await App.Current.MainPage.DisplayActionSheet(title,cancel,destruction,buttons);
         }
 
-        public static async Task DisplayAlert(string title, string message, string cancel)
+        public static void DisplayAlert(string title, string message, string cancel)
         {
-            await App.Current.MainPage.DisplayAlert(title, message, cancel);
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await App.Current.MainPage.DisplayAlert(title, message, cancel);
+            });
         }
 
         public async Task<bool> DisplayAlert(string title, string message, string accept, string cancel)

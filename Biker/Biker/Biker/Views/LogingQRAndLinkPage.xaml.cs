@@ -29,7 +29,7 @@ namespace Biker.Views
                 }
                 catch (Exception ex)
                 {
-                    await DisplayAlert("แจ้งเตือน", "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", "ปิด");
+                    PageService.DisplayAlert("แจ้งเตือน", "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", "ปิด");
                 }
             };
 
@@ -44,7 +44,7 @@ namespace Biker.Views
                 }
                 catch (Exception ex)
                 {
-                    await DisplayAlert("แจ้งเตือน", "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", "ปิด");
+                    PageService.DisplayAlert("แจ้งเตือน", "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", "ปิด");
                 }
             };
 
@@ -59,7 +59,7 @@ namespace Biker.Views
                 }
                 catch (Exception ex)
                 {
-                    await DisplayAlert("แจ้งเตือน", "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", "ปิด");
+                    PageService.DisplayAlert("แจ้งเตือน", "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง", "ปิด");
                 }
             };
         }

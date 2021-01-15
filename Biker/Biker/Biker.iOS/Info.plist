@@ -38,5 +38,9 @@
   <string>Light</string>
   <key>UIStatusBarStyle</key>
   <string>UIStatusBarStyleDarkContent</string>
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>กรุณาเปิดการใช้งานการเข้าถึง GPS เพื่อส่งที่อยู่ของ biker</string>
+  <key>NSLocationAlwaysUsageDescription</key>
+  <string>กรุณาเปิดการใช้งานการเข้าถึง GPS เพื่อส่งที่อยู่ของ biker</string>
 </dict>
 </plist>
