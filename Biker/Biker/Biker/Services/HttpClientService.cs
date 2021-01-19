@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Biker.Views;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -6,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace Biker.Services
 {
@@ -80,5 +82,14 @@ namespace Biker.Services
                 return System.Text.Json.JsonDocument.Parse("{}").RootElement;
             }
         }
+        public static void AuthExpire()
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await App.Current.MainPage.DisplayAlert("แจ้งเตือน", "Session หมดอายุ", "ปิด");
+                App.Current.MainPage = new LoginPage();
+            });
+        }
+
     }
 }
