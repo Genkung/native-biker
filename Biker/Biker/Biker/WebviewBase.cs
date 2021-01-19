@@ -28,6 +28,9 @@ namespace Biker
             xWebview.RegisterNativeFunction("NavigateToPage", NavigateToPage);
             xWebview.RegisterNativeFunction("GetBikerId", GetBikerId);
             xWebview.RegisterNativeFunction("GetCurrentLocation", GetCurrentLocation);
+            xWebview.RegisterNativeFunction("CallApiGet", CallApiGet);
+            xWebview.RegisterNativeFunction("CallApiPost", CallApiPost);
+            xWebview.RegisterNativeFunction("CallApiPut", CallApiPut);
             xWebview.RegisterCallback("Goback", Goback);
             xWebview.RegisterCallback("PopToRoot", PopToRoot);
             xWebview.RegisterCallback("SetRootPage", SetRootPage);
@@ -49,7 +52,49 @@ namespace Biker
 
         public abstract void SetRootPage(string param);
 
-        public async Task<object[]> GetCurrentLocation(string param) 
+        protected virtual async Task<object[]> CallApiGet(string urlparam)
+        {
+            var parsedParam = ConvertParameterFromWebView<CallApiGetParam>(urlparam);
+            if (parsedParam != null)
+            {
+                var responseBody = await HttpClientService.GetJsonElement(parsedParam.Url);
+                return new object[] { responseBody };
+            }
+            else
+            {
+                return new object[] { "{}" };
+            }
+        }
+
+        protected virtual async Task<object[]> CallApiPost(string postparam)
+        {
+            var parsedParam = ConvertParameterFromWebView<CallApiPostParam>(postparam);
+            if (parsedParam != null)
+            {
+                var responseBody = await HttpClientService.PostJsonElement(parsedParam.Url, parsedParam.Data);
+                return new object[] { responseBody };
+            }
+            else
+            {
+                return new object[] { "{}" };
+            }
+        }
+
+        protected virtual async Task<object[]> CallApiPut(string postparam)
+        {
+            var parsedParam = ConvertParameterFromWebView<CallApiPostParam>(postparam);
+            if (parsedParam != null)
+            {
+                var responseBody = await HttpClientService.PutJsonElement(parsedParam.Url, parsedParam.Data);
+                return new object[] { responseBody };
+            }
+            else
+            {
+                return new object[] { "{}" };
+            }
+        }
+
+        public async Task<object[]> GetCurrentLocation(string param)
         {
             var location = await GPSService.GetCurrentLocation();
             return new object[] { location };

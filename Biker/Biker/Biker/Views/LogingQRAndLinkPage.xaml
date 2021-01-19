@@ -7,10 +7,14 @@
               BackgroundColor="White">
     <ContentPage.Content>
         <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
-            <Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png" WidthRequest="250" HeightRequest="250"/>
-            <Button x:Name="b1" Text="Biker 1" BackgroundColor="Orange" TextColor="White" WidthRequest="200"/>
-            <Button x:Name="b2" Text="Biker 2" BackgroundColor="Orange" TextColor="White" WidthRequest="200"/>
-            <Button x:Name="b3" Text="Biker 3" BackgroundColor="Orange" TextColor="White" WidthRequest="200"/>
+            <StackLayout  x:Name="login">
+                <Image Source="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png" WidthRequest="250" HeightRequest="250"/>
+                <Button x:Name="b1" Text="Biker 1" BackgroundColor="Orange" TextColor="White" WidthRequest="200"/>
+                <Button x:Name="b2" Text="Biker 2" BackgroundColor="Orange" TextColor="White" WidthRequest="200"/>
+                <Button x:Name="b3" Text="Biker 3" BackgroundColor="Orange" TextColor="White" WidthRequest="200"/>
+                <Button x:Name="auth" Text="Test Aut" BackgroundColor="Orange" TextColor="White" WidthRequest="200"/>
+            </StackLayout>
+            <ActivityIndicator x:Name="loadingLogin" Color="Orange" IsRunning="False" IsVisible="False" VerticalOptions="CenterAndExpand"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
