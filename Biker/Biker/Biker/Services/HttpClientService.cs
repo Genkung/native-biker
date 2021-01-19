@@ -14,7 +14,7 @@ namespace Biker.Services
     {
         private static readonly HttpClient client = new HttpClient();
 
-        public static void SetClientBearerIfExistOrUnExpire(string token)
+        public static void SetClientBearer(string token)
         {
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }

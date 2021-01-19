@@ -9,10 +9,11 @@
     <ContentPage.Content>
         <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
             <Label Text="Login" FontSize="Title" FontAttributes="Bold" TextColor="Orange" HorizontalOptions="CenterAndExpand" Margin="30,30,30,30"/>
-            <StackLayout VerticalOptions="CenterAndExpand" HeightRequest="100">
+            <StackLayout x:Name="login" VerticalOptions="CenterAndExpand" HeightRequest="100">
                 <Button x:Name="gloginBtn" Text="Login with Google" BackgroundColor="Orange" TextColor="White" WidthRequest="200" VerticalOptions="CenterAndExpand"/>
-                <ActivityIndicator x:Name="loadingLogin" Color="Orange" IsRunning="False" IsVisible="False" VerticalOptions="CenterAndExpand"/>
+                <Button x:Name="ids4loginBtn" Text="Login with IDS4" BackgroundColor="Orange" TextColor="White" WidthRequest="200" VerticalOptions="CenterAndExpand"/>
             </StackLayout>
+            <ActivityIndicator x:Name="loadingLogin" Color="Orange" IsRunning="False" IsVisible="False" VerticalOptions="CenterAndExpand"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

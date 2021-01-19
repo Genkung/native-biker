@@ -17,11 +17,40 @@ namespace Biker.Views
         {
             InitializeComponent();
 
+            ids4loginBtn.Clicked += async (s, e) =>
+            {
+                SetCanLogin(false);
+
+                var isLogin = await AuthService.IDP4Login();
+
+                if (isLogin)
+                {
+                    try
+                    {
+                        await BikerService.SetBikerInfo("1");
+                        await NotificationService.RegisterDevice();
+
+                        var bikerIsWorking = await BikerService.BikerIsWorking();
+
+                        NavigateToMasterDetail(bikerIsWorking);
+                    }
+                    catch (Exception ex)
+                    {
+                        HttpClientService.HandleHttpCatch(ex);
+                        SetCanLogin(true);
+                    }
+                }
+                else
+                {
+                    SetCanLogin(true);
+                }
+            };
+
             gloginBtn.Clicked += async (s, e) =>
             {
                 SetCanLogin(false);
 
-                var isLogin = await AuthService.Login();
+                var isLogin = await AuthService.GLogin();
 
                 if (isLogin)
                 {
@@ -49,7 +78,7 @@ namespace Biker.Views
 
         private void SetCanLogin(bool needLigin)
         {
-            gloginBtn.IsVisible = needLigin;
+            login.IsVisible = needLigin;
             loadingLogin.IsRunning = !needLigin;
             loadingLogin.IsVisible = !needLigin;
         }

@@ -15,7 +15,27 @@ namespace Biker.Services
 {
     public class AuthService
     {
+        private static readonly string CALLBACK_URL = "googlexauth://";
+
         private static AppToken appToken = new AppToken { AccessToken = new SecurityToken(), RefreshToken = new SecurityToken() };
+
+        public static bool HasExpired => DateTime.UtcNow >= appToken?.AccessToken?.ExpiredDate.ToUniversalTime();
+
+        private static DateTime getRefrstokenExpiredDate(WebAuthenticatorResult authResult)
+        {
+            if (authResult == null) return DateTime.UtcNow;
+
+            long expNum;
+
+            if (authResult.Properties.TryGetValue("expires", out string expstring))
+            {
+                expNum = Convert.ToInt64(expstring);
+            }
+            else return DateTime.UtcNow;
+
+            var result = DateTimeOffset.FromUnixTimeSeconds(expNum).UtcDateTime;
+            return result;
+        }
 
         private static DateTime getTokenExpiredDate(string token)
         {
@@ -30,30 +50,51 @@ namespace Biker.Services
             return appToken.AccessToken.Token;
         }
 
-        public static bool HasExpired => DateTime.UtcNow >= appToken?.AccessToken?.ExpiredDate.ToUniversalTime();
-
-        public static async Task<bool> Login()
+        public static async Task<bool> IDP4Login()
         {
             try
             {
-                var authUrl = new Uri($"https://mana-auth-dev.azurewebsites.net/mobileauth/GoogleX/googlexauth");
-                var callbackUrl = new Uri("googlexauth://");
-
+                var authUrl = new Uri($"https://pilot4idp.azurewebsites.net");
+                var callbackUrl = new Uri(CALLBACK_URL);
                 var result = await WebAuthenticator.AuthenticateAsync(authUrl, callbackUrl);
 
-                var AuthToken = result?.AccessToken ?? result?.IdToken;
+                appToken.AccessToken.Token = result?.AccessToken;
+                appToken.RefreshToken.Token = result?.RefreshToken;
+
+                appToken.AccessToken.ExpiredDate = getTokenExpiredDate(appToken.AccessToken.Token);
+                appToken.RefreshToken.ExpiredDate = getRefrstokenExpiredDate(result);
+
+                HttpClientService.SetClientBearer(appToken.AccessToken.Token);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await PageService.DisplayAlert("แจ้งเตือน", $"{ex.ToString()}", "ปิด");
+                return false;
+            }
+        }
+
+        public static async Task<bool> GLogin()
+        {
+            try
+            {
+                var authUrl = new Uri($"https://mana-auth-dev.azurewebsites.net/mobileauth/GoogleX/{CALLBACK_URL}");
+                var callbackUrl = new Uri(CALLBACK_URL);
+
+                var result = await WebAuthenticator.AuthenticateAsync(authUrl, callbackUrl);
 
                 appToken.AccessToken.Token = result?.IdToken;
 
                 appToken.AccessToken.ExpiredDate = getTokenExpiredDate(appToken.AccessToken.Token);
 
-                HttpClientService.SetClientBearerIfExistOrUnExpire(appToken.AccessToken.Token);
+                HttpClientService.SetClientBearer(appToken.AccessToken.Token);
 
                 return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                await PageService.DisplayAlert("แจ้งเตือน", "ไม่สามารถเข้าสู่ระบบได้ กรุณาลองใหม่อีกครั้ง", "ปิด");
+                await PageService.DisplayAlert("แจ้งเตือน", $"{ex.ToString()}", "ปิด");
                 return false;
             }
         }
