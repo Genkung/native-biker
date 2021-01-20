@@ -30,7 +30,7 @@ namespace Biker
             var dirPath = Environment.SpecialFolder.LocalApplicationData;
             var defaultDirPath = Environment.GetFolderPath(dirPath);
             destinationFolder = Path.Combine(defaultDirPath, MCLocalStorageFolderName);
-            DownloadZip("https://manadevfrom.blob.core.windows.net/zips/zip-bike-temp.zip");
+            DownloadZip("https://manadevfrom.blob.core.windows.net/zips/zip-bike.zip");
 
             NavigateToFirstPage();
         }
