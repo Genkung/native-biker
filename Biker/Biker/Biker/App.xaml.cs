@@ -65,6 +65,7 @@ namespace Biker
 
         protected override void OnResume()
         {
+            IsInForeground = true;
             if (MainPage is ContentPage) // Logedin and stay home page
             {
                 AppEvent.Resume(this, MainPage);
