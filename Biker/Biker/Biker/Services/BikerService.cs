@@ -26,5 +26,10 @@ namespace Biker.Services
         {
             return bikerInfo;
         }
+
+        public static void ClearRider() 
+        {
+            bikerInfo = null;
+        }
     }
 }

@@ -9,6 +9,7 @@
     <ContentPage.Content>
         <StackLayout>
             <Button x:Name="loginBtn" Text="Login" BackgroundColor="Orange" TextColor="White" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" WidthRequest="200"/>
+            <ActivityIndicator x:Name="loadingLogin" Color="Orange" IsRunning="False" IsVisible="False" VerticalOptions="CenterAndExpand"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

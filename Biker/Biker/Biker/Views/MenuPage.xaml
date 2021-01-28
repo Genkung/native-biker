@@ -30,7 +30,7 @@
             </ListView>
             <Label Grid.Row="2" Text="ออกจากระบบ" FontAttributes="Bold" FontSize="Medium" VerticalOptions="CenterAndExpand" Padding="10">
                 <Label.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+                    <TapGestureRecognizer Tapped="Logout_Tab"/>
                 </Label.GestureRecognizers>
             </Label>
         </Grid>

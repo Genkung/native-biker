@@ -10,6 +10,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
@@ -103,6 +104,14 @@ namespace Biker
 
         public void ProcessNotification(IDictionary<string, object> notificationData)
         {
+            //var s = new StringBuilder();
+            //notificationData.ForEach(it =>
+            //{
+            //    s.Append($"{it.Key},");
+            //});
+            //Device.BeginInvokeOnMainThread(()=> {
+            //    App.Current.MainPage.DisplayAlert("Dev",$"{s}","ปิดสิครับ");
+            //});
             var isValidNotiMessage = notificationData != null && notificationData.Any();
             if (isValidNotiMessage)
             {

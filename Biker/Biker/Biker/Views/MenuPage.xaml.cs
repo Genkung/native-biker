@@ -38,14 +38,17 @@ namespace Biker.Views
             };
         }
 
-        private async void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        private async void Logout_Tab(object sender, EventArgs e)
         {
             await Logout();
         }
 
         private async Task Logout() 
         {
+            //await AuthService.RefreshToken();
+
             await NotificationService.UnRegisterDevice();
+            await AuthService.Logout();
             App.Current.MainPage = new LoginPage();
         } 
     }

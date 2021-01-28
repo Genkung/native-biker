@@ -15,9 +15,11 @@ namespace Biker.Services
 {
     public class AuthService
     {
-        private static readonly string CALLBACK_URL = "googlexauth://";
+        private static readonly string CALLBACK_URL = "mauth://";
 
         private static AppToken appToken = new AppToken { AccessToken = new SecurityToken(), RefreshToken = new SecurityToken() };
+
+        public static string RefId;
 
         public static bool HasExpired => DateTime.UtcNow >= appToken?.AccessToken?.ExpiredDate.ToUniversalTime();
 
@@ -54,7 +56,7 @@ namespace Biker.Services
         {
             try
             {
-                var authUrl = new Uri($"https://pilot4idp.azurewebsites.net");
+                var authUrl = new Uri($"https://pilotdeli-mvc.azurewebsites.net/mobileauth/login");
                 var callbackUrl = new Uri(CALLBACK_URL);
                 var result = await WebAuthenticator.AuthenticateAsync(authUrl, callbackUrl);
 
@@ -64,21 +66,48 @@ namespace Biker.Services
                 appToken.AccessToken.ExpiredDate = getTokenExpiredDate(appToken.AccessToken.Token);
                 appToken.RefreshToken.ExpiredDate = getRefrstokenExpiredDate(result);
 
-                HttpClientService.SetClientBearer(appToken.AccessToken.Token);
+                var RefId = result.Properties.ContainsKey("ref_id") ? result.Properties["ref_id"] : "";
+
+                if (!string.IsNullOrWhiteSpace(RefId))
+                {
+                    await BikerService.SetBikerInfo(RefId);
+                }
+                else
+                {
+                    await App.Current.MainPage.DisplayAlert("แจ้งเตือน", $"คุณยังไม่ได้ยืนยัน Consent", "ปิด");
+                    await Logout();
+                    return false;
+                }
+
+                //TODO: SetClientBearer when server use real IDP 
+                //HttpClientService.SetClientBearer(appToken.AccessToken.Token);
 
                 return true;
             }
             catch (Exception ex)
             {
-                PageService.DisplayAlert("แจ้งเตือน", $"{ex.ToString()}", "ปิด");
                 return false;
             }
+        }
+
+        public static async Task RefreshToken()
+        {
+            var refreshToken = await HttpClientService.Get<RefreshTokenResponse>($"https://pilotdeli-mvc.azurewebsites.net/mobileauth/refreshtoken/{appToken.RefreshToken.Token}");
+            appToken.AccessToken.Token = refreshToken?.AccessToken;
+            appToken.RefreshToken.Token = refreshToken?.RefreshToken;
         }
 
         public static async Task Logout()
         {
             try
             {
+                //await Browser.OpenAsync("https://pilotdeli-mvc.azurewebsites.net/mobileauth/logout2", BrowserLaunchMode.SystemPreferred);
+#if __ANDROID__
+                var authUrl = new Uri($"https://pilotdeli-mvc.azurewebsites.net/mobileauth/logout");
+                var callbackUrl = new Uri(CALLBACK_URL);
+                await WebAuthenticator.AuthenticateAsync(authUrl, callbackUrl);
+#endif
+                BikerService.ClearRider();
             }
             catch (Exception e)
             {
