@@ -13,7 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Com.OneSignal" Version="3.8.2" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
     <PackageReference Include="TheS.DevXP.MxPractices.Common" Version="0.9.5-pre116" />
     <PackageReference Include="TheS.DevXP.ProPractices" Version="0.9.5-pre116" />
